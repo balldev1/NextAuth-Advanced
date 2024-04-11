@@ -1,8 +1,8 @@
+import {LoginFrom} from "@/components/auth/login-from";
+
 const LoginPage = () => {
     return (
-        <div>
-            login
-        </div>
+        <LoginFrom />
     )
 }
 
