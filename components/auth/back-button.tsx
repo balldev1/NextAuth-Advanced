@@ -13,7 +13,7 @@ export const BackButton = ({
                                href
                            }:BackButtonProps) => {
     return (
-        <Button>
+        <Button variant='ghost' >
             <Link href={href}>
                 {label}
             </Link>

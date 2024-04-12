@@ -6,7 +6,7 @@ import {useState, useTransition} from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { LoginSchema } from "@/schemas";
+import { RegisterSchema } from "@/schemas";
 
 import {
     Form,
@@ -22,9 +22,9 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {FormError} from "@/components/form-error";
 import {FormSuccess} from "@/components/form-success";
-import {login} from "@/actions/login";
+import {register} from "@/actions/register";
 
-export const LoginFrom = () =>{
+export const RegisterFrom = () =>{
 
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
@@ -34,21 +34,22 @@ export const LoginFrom = () =>{
     const [isPending, startTransition] = useTransition();
     // เกิด transition ให้ใช้ useTransition
 
-    const form = useForm<z.infer<typeof LoginSchema>>({
-        resolver : zodResolver(LoginSchema),
+    const form = useForm<z.infer<typeof RegisterSchema>>({
+        resolver : zodResolver(RegisterSchema),
         defaultValues: {
             email: "",
             password: "",
+            name: "",
         }
     });
 
-    const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
         setError("");
         setSuccess("");
         // เกิด transition ให้ใช้ useTransition
         startTransition(()=>{
             // api actions.login => form.value
-            login(values)
+            register(values)
                 // เอาค่าที่ได้จาก login มาเก็บไว้ที่ state
                 .then((data)=> {
                     setError(data.error);
@@ -59,9 +60,9 @@ export const LoginFrom = () =>{
 
     return (
         <CardWrapper
-            headerLabel="Welcome back"
-            backButtonLabel="Don't have an account?"
-            backButtonHref="/auth/register"
+            headerLabel="Create an account"
+            backButtonLabel="Already have an account?"
+            backButtonHref="/auth/login"
             showSocial
         >
             <Form {...form}>
@@ -69,6 +70,29 @@ export const LoginFrom = () =>{
                       className="space-y-6"
                 >
                     <div className="space-y-4">
+                        {/* name */}
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) =>(
+                                <FormItem>
+                                    <FormLabel>
+                                        Name
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            disabled={isPending}
+                                            placeholder="balldev1"
+                                            type="name"
+                                        />
+                                    </FormControl>
+                                    {/* message */}
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        >
+                        </FormField>
                         {/* email */}
                         <FormField
                             control={form.control}
@@ -129,7 +153,7 @@ export const LoginFrom = () =>{
                     disabled={isPending}
                     className="w-full"
                     >
-                        Login
+                        Create an account
                     </Button>
                 </form>
             </Form>
