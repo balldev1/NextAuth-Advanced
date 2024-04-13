@@ -124,7 +124,7 @@ export const RegisterFrom = () =>{
                             render={({ field }) =>(
                                 <FormItem>
                                     <FormLabel>
-                                        Email
+                                        Password
                                     </FormLabel>
                                     <FormControl>
                                         <Input
