@@ -12,6 +12,12 @@ export const {
     signOut,
 }
     = NextAuth({
+    callbacks:{
+        async jwt({token}){
+            console.log({token})
+            return token
+        }
+    },
     adapter: PrismaAdapter(db),
     session: { strategy: "jwt"},
     ...authConfig
