@@ -1,8 +1,10 @@
 import NextAuth from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
-import { db } from "@/lib/db";
+import { db } from "@/lib/db"
+import { getUserById } from "@/data/user";
 import authConfig from "@/auth.config";
+import { UserRole } from "@prisma/client";
 
 // เชื่อมฐานข้อมูล เอา jwt มาใช้ session
 export const {
@@ -13,9 +15,26 @@ export const {
 }
     = NextAuth({
     callbacks:{
+        async session({token, session}){
+            if(token.sub && session.user){
+                session.user.id = token.sub;
+            }
+
+            if(token.role && session.user){
+                session.user.role = token.role as UserRole;
+            }
+            return session;
+        },
         async jwt({token}){
-            console.log({token})
-            return token
+            if (!token.sub) return token;
+
+            const existingUser = await getUserById(token.sub);
+
+            if(!existingUser) return token;
+
+            token.role = existingUser.role;
+
+            return token;
         }
     },
     adapter: PrismaAdapter(db),
